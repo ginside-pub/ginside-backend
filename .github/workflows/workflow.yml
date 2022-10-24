@@ -45,3 +45,6 @@ jobs:
       env:
         GINSIDE_DATABASE_PORT: ${{ job.services.postgres.ports[5432] }}
       run: poetry run python -m pytest --cov-report=xml
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
