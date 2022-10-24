@@ -6,16 +6,16 @@ authors = ["0xDEAFBABE <deafbabe@startmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 alembic = "^1.8.1"
 databases = {extras = ["asyncpg"], version = "^0.6.1"}
 fastapi = "^0.85.1"
 orjson = "^3.8.0"
-psycopg2-binary = "^2.9.4"
 pydantic = "^1.10.2"
 sqlalchemy = "^1.4.42"
 toml = "^0.10.2"
 uvicorn = {extras = ["standard"], version = "^0.19.0"}
+psycopg2-binary = "^2.9.4"
 
 [tool.poetry.group.dev.dependencies]
 async-asgi-testclient = "^1.4.11"
