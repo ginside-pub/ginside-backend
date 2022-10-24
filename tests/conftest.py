@@ -12,7 +12,7 @@ from ginside.core.config import cfg
 
 @fixture(autouse=True, scope='session')
 def setup_db():
-    cfg.test = True
+    cfg.database.test = True
 
     old_db_name = cfg.database.database
     new_db_name = f'ginside-test-{uuid4()}'

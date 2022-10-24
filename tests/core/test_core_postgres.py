@@ -15,7 +15,10 @@ async def test_postgres_session(mocker: MockerFixture):
         postgres.get_session()
 
     await postgres.connect()
-    database_mock.assert_called_once_with(cfg.database.get_url(), force_rollback=cfg.test)
+    database_mock.assert_called_once_with(
+        cfg.database.get_url(),
+        force_rollback=cfg.database.test,
+    )
     assert postgres.get_session() == test_session
 
     await postgres.disconnect()
