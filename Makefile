@@ -1,10 +1,11 @@
 .DEFAULT: help
-.PHONY: help bootstrap lint test testreport outdated clean
+.PHONY: help bootstrap migrate lint test testreport outdated clean
 
 help:
 	@echo "Please use '$(MAKE) <target>' where <target> is one of the following:"
 	@echo "  help        - show this text"
 	@echo "  bootstrap   - initialize virtual environment and install project dependencies"
+	@echo "  migrate     - run database migrations"
 	@echo "  lint        - inspect project source code for errors"
 	@echo "  test        - run project tests"
 	@echo "  testreport  - run project tests and open HTML coverage report"
@@ -13,6 +14,9 @@ help:
 
 bootstrap:
 	poetry install
+
+migrate:
+	poetry run python -m alembic upgrade head
 
 lint:
 	poetry run python -m flake8 tests ginside
