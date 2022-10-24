@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: python:3.11-rc-slim
+      image: python:3.11-rc-bullseye
 
     services:
       postgres:
@@ -27,16 +27,20 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setup app dependencies
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: false
+        installer-parallel: true
+
+    - name: Install app dependencies
       run: |
-        apt install make curl
-        curl -sSL https://install.python-poetry.org | python3 -
-        make bootstrap
+        poetry install
 
     - name: Lint
-      run: make lint
+      run: poetry run python -m flake8 tests ginside
 
     - name: Test
       env:
         GINSIDE_DATABASE_PORT: ${{ job.services.postgres.ports[5432] }}
-      run: make coverage
+      run: poetry run python -m pytest --cov-report=xml
