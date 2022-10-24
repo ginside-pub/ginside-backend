@@ -29,6 +29,7 @@ jobs:
 
     - name: Setup app dependencies
       run: |
+        apt install make curl
         curl -sSL https://install.python-poetry.org | python3 -
         make bootstrap
 
