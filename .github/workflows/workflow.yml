@@ -35,8 +35,7 @@ jobs:
         installer-parallel: true
 
     - name: Install app dependencies
-      run: |
-        poetry install
+      run: poetry install
 
     - name: Lint
       run: poetry run python -m flake8 tests ginside
