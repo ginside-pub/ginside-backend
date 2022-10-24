@@ -27,8 +27,9 @@ class SampleDoesNotExistError(Exception):
 
 
 async def sample_create(sample: schemas.SampleCreate) -> schemas.SampleGet:
-    query = Table.insert().values(
-        sample.dict(), created_at=datetime.now(tz=timezone.utc),
+    query = Sample.insert().values(
+        **sample.dict(),
+        created_at=datetime.now(tz=timezone.utc),
     ).returning(*Sample.c)
 
     try:
@@ -39,8 +40,9 @@ async def sample_create(sample: schemas.SampleCreate) -> schemas.SampleGet:
 
 
 async def sample_update(sample_id: int, sample: schemas.SampleUpdate) -> schemas.SampleGet:
-    query = Table.update().where(Sample.c.id == sample_id).values(
-        sample.dict(), updated_at=datetime.now(tz=timezone.utc),
+    query = Sample.update().where(Sample.c.id == sample_id).values(
+        **sample.dict(),
+        updated_at=datetime.now(tz=timezone.utc),
     ).returning(*Sample.c)
 
     updated = await get_session().fetch_one(query)
@@ -52,7 +54,7 @@ async def sample_update(sample_id: int, sample: schemas.SampleUpdate) -> schemas
 
 
 async def sample_get(sample_id: int) -> schemas.SampleGet:
-    query = Table.select().where(Sample.c.id == sample_id)
+    query = Sample.select().where(Sample.c.id == sample_id)
     fetched = await get_session().fetch_one(query)
 
     if not fetched:
@@ -62,12 +64,12 @@ async def sample_get(sample_id: int) -> schemas.SampleGet:
 
 
 async def sample_get_list() -> schemas.SampleGetList:
-    query = Table.select()
+    query = Sample.select()
     fetched = await get_session().fetch_all(query)
     return schemas.SampleGetList(samples=fetched)
 
 
 async def sample_delete(sample_id: int):
     await sample_get(sample_id)
-    query = Table.delete().where(Sample.c.id == sample_id)
+    query = Sample.delete().where(Sample.c.id == sample_id)
     await get_session().execute(query)

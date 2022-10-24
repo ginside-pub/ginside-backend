@@ -28,6 +28,7 @@ class DatabaseSettings(BaseSettings):
 
 class Settings(BaseSettings):
     debug: bool = True
+    test: bool = False
     database: DatabaseSettings = DatabaseSettings()
 
     class Config(BaseSettingsConfig):

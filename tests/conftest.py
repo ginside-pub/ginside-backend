@@ -1,18 +1,19 @@
 from uuid import uuid4
 
-from databases import Database
 from pytest import fixture
 from pytest_mock import MockerFixture
 from sqlalchemy import create_engine
 from sqlalchemy_utils.functions import create_database, drop_database
 
 from ginside import models  # noqa: F401
+from ginside.core.postgres import metadata, connect, disconnect
 from ginside.core.config import cfg
-from ginside.core.postgres import metadata
 
 
 @fixture(autouse=True, scope='session')
 def setup_db():
+    cfg.test = True
+
     old_db_name = cfg.database.database
     new_db_name = f'ginside-test-{uuid4()}'
     cfg.database.database = new_db_name
@@ -23,22 +24,22 @@ def setup_db():
         engine = create_engine(db_url)
         metadata.create_all(engine)
 
+        with engine.connect() as connection:
+            connection.execute("""
+                INSERT INTO sample (name, description, created_at)
+                VALUES ('First', 'Hello world!', '2022-01-01T00:00:00+00:00');
+            """)
+
         yield
     finally:
-        drop_database(db_url)
         cfg.database.database = old_db_name
+        drop_database(db_url)
 
 
 @fixture
 async def postgres(mocker: MockerFixture):
-    session: Database | None = None
-
     try:
-        session = Database(cfg.database.get_url(), force_rollback=True)
-        await session.connect()
-        mocker.patch('ginside.core.postgres.get_session', return_value=session)
-
+        await connect()
         yield
     finally:
-        if session:
-            await session.disconnect()
+        await disconnect()
