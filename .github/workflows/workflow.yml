@@ -1,0 +1,41 @@
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+
+    container:
+      image: python:3.11-rc-slim
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: ginside
+          POSTGRES_PASSWORD: ginside
+          POSTGRES_DB: ginside
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup app dependencies
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        make bootstrap
+
+    - name: Lint
+      run: make lint
+
+    - name: Test
+      env:
+        GINSIDE_DATABASE_PORT: ${{ job.services.postgres.ports[5432] }}
+      run: make coverage
