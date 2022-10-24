@@ -1,12 +1,11 @@
 from databases import Database
-from pytest import raises, mark
+from pytest import raises
 from pytest_mock import MockerFixture
 
 from ginside.core import postgres
 from ginside.core.config import cfg
 
 
-@mark.asyncio
 async def test_postgres_session(mocker: MockerFixture):
     test_session = Database(cfg.database.get_url())
     database_mock = mocker.patch('databases.Database')
