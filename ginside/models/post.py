@@ -13,8 +13,8 @@ Post = Table(
     Column('title', Text, index=True, nullable=False),
     Column('contents', Text, nullable=False),
     Column('archived', Boolean, default=False),
-    Column('created_at', DateTime(timezone=True), nullable=False),
-    Column('updated_at', DateTime(timezone=True)),
+    Column('created_at', DateTime(timezone=True), nullable=False, index=True),
+    Column('updated_at', DateTime(timezone=True), index=True),
 )
 
 
