@@ -26,9 +26,6 @@ def setup_db():
 
         with engine.connect() as connection:
             connection.execute("""
-              INSERT INTO sample (name, description, created_at)
-              VALUES ('First', 'Hello world!', '2022-01-01T00:00:00+00:00');
-
               INSERT INTO post (archived, title, contents, created_at)
               VALUES (FALSE, 'First post', 'Contents of the post', '2022-01-01T00:00:00+00:00');
             """)

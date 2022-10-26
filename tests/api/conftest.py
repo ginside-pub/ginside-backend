@@ -13,17 +13,6 @@ async def api_client(postgres: None) -> TestClient:
 
 
 @fixture
-def sample_in_db() -> Dict[str, str]:
-    return {
-        'id': 1,
-        'name': 'First',
-        'description': 'Hello world!',
-        'created_at': '2022-01-01T00:00:00+00:00',
-        'updated_at': None,
-    }
-
-
-@fixture
 def post_in_db() -> Dict[str, Any]:
     return {
         'id': 1,
