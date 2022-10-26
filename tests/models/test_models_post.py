@@ -30,6 +30,13 @@ async def test_post_get_list(postgres: None, post_in_db: schemas.PostGet):
     assert fetched.posts == [post_in_db, created]
 
 
+async def test_post_get_list_with_archived(
+    postgres: None, post_in_db: schemas.PostGet, post_in_db_archived: schemas.PostGet,
+):
+    fetched = await models.post_get_list(include_archived=True)
+    assert fetched.posts == [post_in_db, post_in_db_archived]
+
+
 async def test_post_get_nonexistent(postgres: None):
     with raises(models.PostDoesNotExistError):
         await models.post_get(0)
