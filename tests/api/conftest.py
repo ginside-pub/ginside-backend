@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 
 from async_asgi_testclient import TestClient
 from pytest import fixture
@@ -18,6 +18,18 @@ def sample_in_db() -> Dict[str, str]:
         'id': 1,
         'name': 'First',
         'description': 'Hello world!',
+        'created_at': '2022-01-01T00:00:00+00:00',
+        'updated_at': None,
+    }
+
+
+@fixture
+def post_in_db() -> Dict[str, Any]:
+    return {
+        'id': 1,
+        'title': 'First post',
+        'contents': 'Contents of the post',
+        'archived': False,
         'created_at': '2022-01-01T00:00:00+00:00',
         'updated_at': None,
     }
