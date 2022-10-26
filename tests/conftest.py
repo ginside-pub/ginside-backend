@@ -27,7 +27,9 @@ def setup_db():
         with engine.connect() as connection:
             connection.execute("""
               INSERT INTO post (archived, title, contents, created_at)
-              VALUES (FALSE, 'First post', 'Contents of the post', '2022-01-01T00:00:00+00:00');
+              VALUES
+                (FALSE, 'First post', 'Contents of the post', '2022-01-01T00:00:00+00:00'),
+                (TRUE, 'Archived post', 'Contents', '2022-01-01T00:00:00+00:00');
             """)
 
         yield

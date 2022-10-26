@@ -56,8 +56,12 @@ async def post_get(post_id: int) -> schemas.PostGet:
     return schemas.PostGet(**fetched)
 
 
-async def post_get_list() -> schemas.PostGetList:
+async def post_get_list(include_archived: bool = False) -> schemas.PostGetList:
     query = Post.select()
+
+    if not include_archived:
+        query = query.where(Post.c.archived.is_(False))
+
     fetched = await get_session().fetch_all(query)
     return schemas.PostGetList(posts=fetched)
 

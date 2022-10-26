@@ -13,8 +13,8 @@ router = APIRouter()
     response_model=schemas.PostGetList,
     summary='Get list of all posts.',
 )
-async def posts_get():
-    return await models.post_get_list()
+async def posts_get(include_archived: bool = False):
+    return await models.post_get_list(include_archived)
 
 
 @router.get(

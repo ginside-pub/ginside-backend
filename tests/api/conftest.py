@@ -22,3 +22,15 @@ def post_in_db() -> Dict[str, Any]:
         'created_at': '2022-01-01T00:00:00+00:00',
         'updated_at': None,
     }
+
+
+@fixture
+def post_in_db_archived() -> Dict[str, Any]:
+    return {
+        'id': 2,
+        'title': 'Archived post',
+        'contents': 'Contents',
+        'archived': True,
+        'created_at': '2022-01-01T00:00:00+00:00',
+        'updated_at': None,
+    }

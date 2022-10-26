@@ -15,3 +15,15 @@ def post_in_db():
         created_at=datetime(2022, 1, 1, tzinfo=timezone.utc),
         updated_at=None,
     )
+
+
+@fixture
+def post_in_db_archived():
+    return schemas.PostGet(
+        id=2,
+        title='Archived post',
+        contents='Contents',
+        archived=True,
+        created_at=datetime(2022, 1, 1, tzinfo=timezone.utc),
+        updated_at=None,
+    )

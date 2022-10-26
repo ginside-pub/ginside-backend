@@ -1,15 +1,23 @@
-from typing import Dict
+from typing import Dict, Any
 
 from async_asgi_testclient import TestClient
 
 
-async def test_post_get(api_client: TestClient, post_in_db: Dict[str, str]):
+async def test_post_get(api_client: TestClient, post_in_db: Dict[str, Any]):
     resp = await api_client.get('/posts/')
     assert resp.status_code == 200
     assert resp.json() == {'posts': [post_in_db]}
 
 
-async def test_post_get_by_id(api_client: TestClient, post_in_db: Dict[str, str]):
+async def test_post_get_with_archived(
+    api_client: TestClient, post_in_db: Dict[str, Any], post_in_db_archived: Dict[str, Any],
+):
+    resp = await api_client.get('/posts/?include_archived=true')
+    assert resp.status_code == 200
+    assert resp.json() == {'posts': [post_in_db, post_in_db_archived]}
+
+
+async def test_post_get_by_id(api_client: TestClient, post_in_db: Dict[str, Any]):
     resp = await api_client.get(f'/posts/{post_in_db["id"]}')
     assert resp.status_code == 200
     assert resp.json() == post_in_db
@@ -22,7 +30,7 @@ async def test_post_get_by_id_nonexistent(api_client: TestClient):
     assert resp.json() == {'detail': f'Post {post_id!r} was not found.'}
 
 
-async def test_post_update(api_client: TestClient, post_in_db: Dict[str, str]):
+async def test_post_update(api_client: TestClient, post_in_db: Dict[str, Any]):
     contents = 'Updated'
     resp = await api_client.put(f'/posts/{post_in_db["id"]}', json={'contents': contents})
     assert resp.status_code == 200
@@ -42,7 +50,7 @@ async def test_post_update_nonexistent(api_client: TestClient):
     assert resp.json() == {'detail': f'Post {post_id!r} was not found.'}
 
 
-async def test_post_delete(api_client: TestClient, post_in_db: Dict[str, str]):
+async def test_post_delete(api_client: TestClient, post_in_db: Dict[str, Any]):
     resp = await api_client.delete(f'/posts/{post_in_db["id"]}')
     assert resp.status_code == 200
     resp = await api_client.get(f'/posts/{post_in_db["id"]}')
