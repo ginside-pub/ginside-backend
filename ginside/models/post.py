@@ -34,7 +34,7 @@ async def post_create(post: schemas.PostCreate) -> schemas.PostGet:
 
 async def post_update(post_id: int, post: schemas.PostUpdate) -> schemas.PostGet:
     query = Post.update().where(Post.c.id == post_id).values(
-        **post.dict(),
+        **post.dict(exclude_none=True),
         updated_at=datetime.now(tz=timezone.utc),
     ).returning(*Post.c)
 

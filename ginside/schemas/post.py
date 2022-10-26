@@ -14,7 +14,9 @@ class PostCreate(Post):
 
 
 class PostUpdate(Post):
-    pass
+    title: str | None
+    contents: str | None
+    archived: bool | None
 
 
 class PostGet(PostCreate):
