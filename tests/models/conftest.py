@@ -27,3 +27,13 @@ def post_in_db_archived():
         created_at=datetime(2022, 1, 1, tzinfo=timezone.utc),
         updated_at=None,
     )
+
+
+@fixture
+def user_in_db():
+    return schemas.UserGet(
+        username='jdoe',
+        display_name='John Doe',
+        bio='First user',
+        created_at=datetime(2022, 1, 1, tzinfo=timezone.utc),
+    )
