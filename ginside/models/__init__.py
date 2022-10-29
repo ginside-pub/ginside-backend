@@ -4,3 +4,10 @@ from .post import post_delete  # noqa: F401
 from .post import post_get  # noqa: F401
 from .post import post_get_list  # noqa: F401
 from .post import post_update  # noqa: F401
+from .user import UserDoesNotExistError  # noqa: F401
+from .user import UsernameOccupiedError  # noqa: F401
+from .user import user_create  # noqa: F401
+from .user import user_delete  # noqa: F401
+from .user import user_get  # noqa: F401
+from .user import user_get_list  # noqa: F401
+from .user import user_update  # noqa: F401
