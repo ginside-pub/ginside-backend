@@ -70,4 +70,4 @@ async def test_post_delete(postgres: None, post_in_db: schemas.PostGet):
 
 async def test_post_delete_nonexistent(postgres: None):
     with raises(models.PostDoesNotExistError):
-        await models.post_get(0)
+        await models.post_delete(0)
