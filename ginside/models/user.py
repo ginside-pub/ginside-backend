@@ -11,6 +11,7 @@ User = Table(
     'user',
     metadata,
     Column('username', Text, primary_key=True),
+    Column('password', Text, nullable=False),
     Column('display_name', Text, index=True, nullable=True),
     Column('bio', Text, nullable=True),
     Column('created_at', DateTime(timezone=True), nullable=False, index=True),
@@ -59,6 +60,16 @@ async def user_get(username: str) -> schemas.UserGet:
         raise UserDoesNotExistError
 
     return schemas.UserGet(**fetched)
+
+
+async def user_get_internal(username: str) -> schemas.UserInternal:
+    query = User.select().where(User.c.username == username)
+    fetched = await get_session().fetch_one(query)
+
+    if not fetched:
+        raise UserDoesNotExistError
+
+    return schemas.UserInternal(**fetched)
 
 
 async def user_get_list() -> schemas.UserGetList:

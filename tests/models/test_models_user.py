@@ -4,7 +4,7 @@ from ginside import models, schemas
 
 
 async def test_user_create(postgres: None):
-    user = schemas.UserCreate(username='jane', display_name='Jane Doe')
+    user = schemas.UserCreate(username='jane', password='secret', display_name='Jane Doe')
     created = await models.user_create(user)
 
     assert created.username == user.username
@@ -14,7 +14,7 @@ async def test_user_create(postgres: None):
 
 
 async def test_user_create_with_occupied_username(postgres: None, user_in_db: schemas.UserGet):
-    user = schemas.UserCreate(username=user_in_db.username, display_name=user_in_db.display_name)
+    user = schemas.UserCreate(username=user_in_db.username, password='secret')
 
     with raises(models.UsernameOccupiedError):
         await models.user_create(user)
@@ -29,7 +29,7 @@ async def test_user_get_list(postgres: None, user_in_db: schemas.UserGet):
     fetched = await models.user_get_list()
     assert fetched.users == [user_in_db]
 
-    user = schemas.UserCreate(username='jane', display_name='Jane Doe')
+    user = schemas.UserCreate(username='jane', password='secret')
     created = await models.user_create(user)
 
     fetched = await models.user_get_list()

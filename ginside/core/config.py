@@ -27,9 +27,19 @@ class DatabaseSettings(BaseSettings):
         env_prefix = 'ginside_database_'
 
 
+class SecuritySettings(BaseSettings):
+    secret_key: str = 'SECRET'
+    hashing_algorithm: str = 'HS256'
+    access_token_ttl: int = 30
+
+    class Config(BaseSettingsConfig):
+        env_prefix = 'ginside_security_'
+
+
 class Settings(BaseSettings):
     debug: bool = True
     database: DatabaseSettings = DatabaseSettings()
+    security: SecuritySettings = SecuritySettings()
 
     class Config(BaseSettingsConfig):
         env_prefix = 'ginside_'
