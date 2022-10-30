@@ -9,5 +9,6 @@ from .user import UsernameOccupiedError  # noqa: F401
 from .user import user_create  # noqa: F401
 from .user import user_delete  # noqa: F401
 from .user import user_get  # noqa: F401
+from .user import user_get_internal  # noqa: F401
 from .user import user_get_list  # noqa: F401
 from .user import user_update  # noqa: F401

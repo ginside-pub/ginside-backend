@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -22,9 +22,9 @@ def hash_password(password):
     return pwd_context.hash(password)
 
 
-async def authenticate_user(username: str, password: str):
+async def authenticate_user(username: str, password: str) -> schemas.UserInternal | bool:
     try:
-        user = await models.user_get(username)
+        user = await models.user_get_internal(username)
     except models.UserDoesNotExistError:
         return False
 
@@ -34,13 +34,13 @@ async def authenticate_user(username: str, password: str):
     return user
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
 
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+    if expires_delta is not None:
+        expire = datetime.now(tz=timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.now(tz=timezone.utc) + timedelta(minutes=15)
 
     to_encode.update({'exp': expire})
 
@@ -53,6 +53,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
+def decode_jwt_token(token: str) -> dict:
+    return jwt.decode(token, cfg.security.secret_key, algorithms=[cfg.security.hashing_algorithm])
+
+
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.UserInternal:
     credentials_exception = HTTPException(
         status_code=401,
@@ -61,24 +65,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.UserI
     )
 
     try:
-        payload = jwt.decode(
-            token,
-            cfg.security.secret_key,
-            algorithms=[cfg.security.hashing_algorithm],
-        )
-
+        payload = decode_jwt_token(token)
         username: str = payload.get('sub')
 
         if not username:
             raise credentials_exception
 
         token_data = schemas.TokenData(username=username)
+        user = await models.user_get(token_data.username)
     except JWTError as e:
         raise credentials_exception from e
-
-    user = await models.user_get(token_data.username)
-
-    if not user:
-        raise credentials_exception
+    except models.UserDoesNotExistError as e:
+        raise credentials_exception from e
 
     return user

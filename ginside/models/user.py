@@ -62,6 +62,16 @@ async def user_get(username: str) -> schemas.UserGet:
     return schemas.UserGet(**fetched)
 
 
+async def user_get_internal(username: str) -> schemas.UserInternal:
+    query = User.select().where(User.c.username == username)
+    fetched = await get_session().fetch_one(query)
+
+    if not fetched:
+        raise UserDoesNotExistError
+
+    return schemas.UserInternal(**fetched)
+
+
 async def user_get_list() -> schemas.UserGetList:
     query = User.select()
     fetched = await get_session().fetch_all(query)
