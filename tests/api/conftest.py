@@ -47,3 +47,13 @@ def post_in_db_archived() -> Dict[str, Any]:
         'created_at': '2022-01-01T00:00:00+00:00',
         'updated_at': None,
     }
+
+
+@fixture
+def user_in_db() -> Dict[str, Any]:
+    return {
+        'username': 'jdoe',
+        'display_name': 'John Doe',
+        'bio': 'First user',
+        'created_at': '2022-01-01T00:00:00+00:00',
+    }
