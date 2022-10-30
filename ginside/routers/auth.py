@@ -17,7 +17,7 @@ router = APIRouter()
     response_model=schemas.Token,
     responses=generate_responses(401),
 )
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+async def get_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await auth.authenticate_user(form_data.username, form_data.password)
 
     if not user:
@@ -37,6 +37,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {'access_token': access_token, 'token_type': 'bearer'}
 
 
-@router.get('/test')
-async def read_users_me(current_user: schemas.UserGet = Depends(auth.get_current_user)):
-    return current_user.username
+@router.get(
+    '/me',
+    response_model=schemas.UserGet,
+    responses=generate_responses(401),
+)
+async def read_users_me(current_user: schemas.UserInternal = Depends(auth.get_current_user)):
+    return current_user

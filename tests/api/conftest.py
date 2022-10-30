@@ -13,6 +13,19 @@ async def api_client(postgres: None) -> TestClient:
 
 
 @fixture
+async def auth_api_client(postgres: None) -> TestClient:
+    async with TestClient(app) as client:
+        resp = await client.post(
+            '/auth/token',
+            form={'username': 'jdoe', 'password': 'SECRET'},
+        )
+        token = resp.json()['access_token']
+
+        client.headers = {'Authorization': f'Bearer {token}'}
+        yield client
+
+
+@fixture
 def post_in_db() -> Dict[str, Any]:
     return {
         'id': 1,
