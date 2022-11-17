@@ -33,6 +33,7 @@ pytest-cov = "^4.0.0"
 pytest-mock = "^3.10.0"
 pytest-xdist = "^3.0.2"
 sqlalchemy-utils = "^0.38.3"
+bandit = "^1.7.4"
 
 [tool.coverage.run]
 omit = ["ginside/migrations"]

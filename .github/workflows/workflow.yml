@@ -35,15 +35,18 @@ jobs:
         installer-parallel: true
 
     - name: Install app dependencies
-      run: poetry install
+      run: make bootstrap
 
-    - name: Lint
-      run: poetry run python -m flake8 tests ginside
+    - name: Inspect source code for style issues
+      run: make lint
 
-    - name: Test
+    - name: Inspect source code for security issues
+      run: make inspect
+
+    - name: Run project tests
       env:
         GINSIDE_DATABASE_PORT: ${{ job.services.postgres.ports[5432] }}
-      run: poetry run python -m pytest --cov-report=xml
+      run: make coverage
 
     - name: Upload coverage
       uses: codecov/codecov-action@v3
