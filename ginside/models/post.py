@@ -7,14 +7,14 @@ from ..core.postgres import get_session, metadata
 
 
 Post = Table(
-    'post',
+    'posts',
     metadata,
     Column('id', Integer, primary_key=True),
     Column('title', Text, index=True, nullable=False),
     Column('contents', Text, nullable=False),
-    Column('archived', Boolean, default=False),
+    Column('archived', Boolean, nullable=False),
     Column('created_at', DateTime(timezone=True), nullable=False, index=True),
-    Column('updated_at', DateTime(timezone=True), index=True),
+    Column('updated_at', DateTime(timezone=True)),
 )
 
 

@@ -8,7 +8,7 @@ from ..core.postgres import get_session, metadata
 
 
 User = Table(
-    'user',
+    'users',
     metadata,
     Column('username', Text, primary_key=True),
     Column('password', Text, nullable=False),
