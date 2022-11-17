@@ -27,10 +27,15 @@ def setup_db():
         with engine.connect() as connection:
             connection.execute("""
                 INSERT INTO users (username, display_name, bio, created_at, password)
-                VALUES (
-                    'jdoe', 'John Doe', 'First user', '2022-01-01T00:00:00+00:00',
-                    '$2b$12$wpPYiaAb.ab67jDCpISc6e0faZybtadbVdAFlewV/7KzOp7TzA1cy'
-                );
+                VALUES
+                    (
+                        'jdoe', 'John Doe', 'First user', '2022-01-01T00:00:00+00:00',
+                        '$2b$12$wpPYiaAb.ab67jDCpISc6e0faZybtadbVdAFlewV/7KzOp7TzA1cy'
+                    ),
+                    (
+                        'jack', 'Jack Doe', 'No posts', '2022-01-01T00:00:00+00:00',
+                        '$2b$12$wpPYiaAb.ab67jDCpISc6e0faZybtadbVdAFlewV/7KzOp7TzA1cy'
+                    );
 
                 INSERT INTO posts (author, archived, title, contents, created_at)
                 VALUES

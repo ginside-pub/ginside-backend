@@ -50,6 +50,12 @@ async def test_post_update_nonexistent(auth_api_client: TestClient):
     assert resp.json() == {'detail': f'Post {post_id!r} was not found.'}
 
 
+async def test_post_update_another_user(alt_auth_api_client: TestClient):
+    resp = await alt_auth_api_client.put('/posts/1', json={'contents': 'New contents'})
+    assert resp.status_code == 404
+    assert resp.json() == {'detail': 'Post 1 was not found.'}
+
+
 async def test_post_delete(auth_api_client: TestClient, post_in_db: Dict[str, Any]):
     resp = await auth_api_client.delete(f'/posts/{post_in_db["id"]}')
     assert resp.status_code == 200
@@ -62,6 +68,12 @@ async def test_post_delete_nonexistent(auth_api_client: TestClient):
     resp = await auth_api_client.delete(f'/posts/{post_id}')
     assert resp.status_code == 404
     assert resp.json() == {'detail': f'Post {post_id!r} was not found.'}
+
+
+async def test_post_delete_another_user(alt_auth_api_client: TestClient):
+    resp = await alt_auth_api_client.delete('/posts/1')
+    assert resp.status_code == 404
+    assert resp.json() == {'detail': 'Post 1 was not found.'}
 
 
 async def test_create_post(auth_api_client: TestClient):

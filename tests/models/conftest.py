@@ -39,3 +39,13 @@ def user_in_db():
         bio='First user',
         created_at=datetime(2022, 1, 1, tzinfo=timezone.utc),
     )
+
+
+@fixture
+def user_in_db_no_posts():
+    return schemas.UserGet(
+        username='jack',
+        display_name='Jack Doe',
+        bio='No posts',
+        created_at=datetime(2022, 1, 1, tzinfo=timezone.utc),
+    )

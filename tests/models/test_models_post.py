@@ -70,6 +70,13 @@ async def test_post_update_nonexistent(postgres: None):
         await models.post_update(0, 'jdoe', post)
 
 
+async def test_post_update_another_user(postgres: None):
+    post = schemas.PostUpdate(contents='New contents')
+
+    with raises(models.PostDoesNotExistError):
+        await models.post_update(1, 'jack', post)
+
+
 async def test_post_delete(postgres: None, post_in_db: schemas.PostGet):
     await models.post_delete(post_in_db.id, post_in_db.author)
 
@@ -80,3 +87,8 @@ async def test_post_delete(postgres: None, post_in_db: schemas.PostGet):
 async def test_post_delete_nonexistent(postgres: None):
     with raises(models.PostDoesNotExistError):
         await models.post_delete(0, 'jdoe')
+
+
+async def test_post_delete_another_user(postgres: None):
+    with raises(models.PostDoesNotExistError):
+        await models.post_delete(1, 'jack')

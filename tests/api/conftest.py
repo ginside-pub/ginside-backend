@@ -26,6 +26,19 @@ async def auth_api_client(postgres: None) -> TestClient:
 
 
 @fixture
+async def alt_auth_api_client(postgres: None) -> TestClient:
+    async with TestClient(app) as client:
+        resp = await client.post(
+            '/auth/token',
+            form={'username': 'jack', 'password': 'SECRET'},
+        )
+        token = resp.json()['access_token']
+
+        client.headers = {'Authorization': f'Bearer {token}'}
+        yield client
+
+
+@fixture
 def post_in_db() -> Dict[str, Any]:
     return {
         'id': 1,
@@ -57,5 +70,15 @@ def user_in_db() -> Dict[str, Any]:
         'username': 'jdoe',
         'display_name': 'John Doe',
         'bio': 'First user',
+        'created_at': '2022-01-01T00:00:00+00:00',
+    }
+
+
+@fixture
+def user_in_db_no_posts() -> Dict[str, Any]:
+    return {
+        'username': 'jack',
+        'display_name': 'Jack Doe',
+        'bio': 'No posts',
         'created_at': '2022-01-01T00:00:00+00:00',
     }

@@ -41,10 +41,14 @@ async def test_get_user_nonexistent(api_client: TestClient):
     assert resp.status_code == 404
 
 
-async def test_get_users(api_client: TestClient, user_in_db: dict[str, any]):
+async def test_get_users(
+    api_client: TestClient,
+    user_in_db: dict[str, Any],
+    user_in_db_no_posts: dict[str, Any],
+):
     resp = await api_client.get('/users/')
     assert resp.status_code == 200
-    assert resp.json()['users'] == [user_in_db]
+    assert resp.json()['users'] == [user_in_db, user_in_db_no_posts]
 
 
 async def test_create_user(api_client: TestClient):

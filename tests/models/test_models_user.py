@@ -25,15 +25,17 @@ async def test_user_get(postgres: None, user_in_db: schemas.UserGet):
     assert fetched == user_in_db
 
 
-async def test_user_get_list(postgres: None, user_in_db: schemas.UserGet):
+async def test_user_get_list(
+    postgres: None, user_in_db: schemas.UserGet, user_in_db_no_posts: schemas.UserGet,
+):
     fetched = await models.user_get_list()
-    assert fetched.users == [user_in_db]
+    assert fetched.users == [user_in_db, user_in_db_no_posts]
 
     user = schemas.UserCreate(username='jane', password='secret')
     created = await models.user_create(user)
 
     fetched = await models.user_get_list()
-    assert fetched.users == [user_in_db, created]
+    assert fetched.users == [user_in_db, user_in_db_no_posts, created]
 
 
 async def test_user_get_nonexistent(postgres: None):
