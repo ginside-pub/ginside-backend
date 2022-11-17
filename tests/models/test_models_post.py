@@ -52,7 +52,7 @@ async def test_post_get_nonexistent(postgres: None):
 
 async def test_post_update(postgres: None, post_in_db: schemas.PostGet):
     post = schemas.PostUpdate(contents='New contents', archived=True)
-    updated = await models.post_update(post_in_db.id, post)
+    updated = await models.post_update(post_in_db.id, post_in_db.author, post)
 
     assert updated.id == post_in_db.id
     assert updated.title == post_in_db.title
@@ -67,11 +67,11 @@ async def test_post_update_nonexistent(postgres: None):
     post = schemas.PostUpdate(contents='New contents')
 
     with raises(models.PostDoesNotExistError):
-        await models.post_update(0, post)
+        await models.post_update(0, 'jdoe', post)
 
 
 async def test_post_delete(postgres: None, post_in_db: schemas.PostGet):
-    await models.post_delete(post_in_db.id)
+    await models.post_delete(post_in_db.id, post_in_db.author)
 
     with raises(models.PostDoesNotExistError):
         await models.post_get(post_in_db.id)
@@ -79,4 +79,4 @@ async def test_post_delete(postgres: None, post_in_db: schemas.PostGet):
 
 async def test_post_delete_nonexistent(postgres: None):
     with raises(models.PostDoesNotExistError):
-        await models.post_delete(0)
+        await models.post_delete(0, 'jdoe')

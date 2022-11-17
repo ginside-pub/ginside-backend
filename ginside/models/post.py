@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from asyncpg.exceptions import ForeignKeyViolationError
 from sqlalchemy import Table, Column, Integer, Text, DateTime, Boolean, ForeignKey
+from sqlalchemy.sql import and_
 
 from .. import schemas
 from ..core.postgres import get_session, metadata
@@ -41,8 +42,8 @@ async def post_create(post: schemas.PostCreate, author: str) -> schemas.PostGet:
     return schemas.PostGet(**created)
 
 
-async def post_update(post_id: int, post: schemas.PostUpdate) -> schemas.PostGet:
-    query = Post.update().where(Post.c.id == post_id).values(
+async def post_update(post_id: int, author: str, post: schemas.PostUpdate) -> schemas.PostGet:
+    query = Post.update().where(and_(Post.c.id == post_id, Post.c.author == author)).values(
         **post.dict(exclude_none=True),
         updated_at=datetime.now(tz=timezone.utc),
     ).returning(*Post.c)
@@ -75,7 +76,12 @@ async def post_get_list(include_archived: bool = False) -> schemas.PostGetList:
     return schemas.PostGetList(posts=fetched)
 
 
-async def post_delete(post_id: int):
-    await post_get(post_id)
-    query = Post.delete().where(Post.c.id == post_id)
-    await get_session().execute(query)
+async def post_delete(post_id: int, author: str):
+    query = Post.delete().where(
+        and_(Post.c.id == post_id, Post.c.author == author),
+    ).returning(*Post.c)
+
+    deleted = await get_session().fetch_one(query)
+
+    if not deleted:
+        raise PostDoesNotExistError

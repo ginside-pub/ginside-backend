@@ -41,7 +41,11 @@ async def posts_get_by_id(post_id: int):
     responses=generate_responses(404),
     summary='Update post by its ID.',
 )
-async def posts_update(post_id: int, post: schemas.PostUpdate):
+async def posts_update(
+    post_id: int,
+    post: schemas.PostUpdate,
+    current_user: schemas.UserInternal = Depends(auth.get_current_user),
+):
     """Updates post by its ID.
 
     Returns:
@@ -49,7 +53,7 @@ async def posts_update(post_id: int, post: schemas.PostUpdate):
     """
 
     try:
-        return await models.post_update(post_id, post)
+        return await models.post_update(post_id, current_user.username, post)
     except models.PostDoesNotExistError:
         raise HTTPException(status_code=404, detail=f'Post {post_id!r} was not found.')
 
@@ -59,7 +63,10 @@ async def posts_update(post_id: int, post: schemas.PostUpdate):
     responses=generate_responses(404),
     summary='Delete post by its ID.',
 )
-async def posts_delete(post_id: int):
+async def posts_delete(
+    post_id: int,
+    current_user: schemas.UserInternal = Depends(auth.get_current_user),
+):
     """Deletes post by its ID.
 
     Returns:
@@ -67,7 +74,7 @@ async def posts_delete(post_id: int):
     """
 
     try:
-        await models.post_delete(post_id)
+        await models.post_delete(post_id, current_user.username)
     except models.PostDoesNotExistError:
         raise HTTPException(status_code=404, detail=f'Post {post_id!r} was not found.')
 
