@@ -18,7 +18,7 @@ async def connect() -> None:
     if not session:
         session = databases.Database(
             cfg.database.get_url(),
-            force_rollback=cfg.database.test,
+            force_rollback=cfg.database.force_rollback,
         )
 
         await session.connect()

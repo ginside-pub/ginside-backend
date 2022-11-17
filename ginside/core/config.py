@@ -6,7 +6,7 @@ class BaseSettingsConfig:
 
 
 class DatabaseSettings(BaseSettings):
-    test: bool = False
+    force_rollback: bool = False
     host: str = '127.0.0.1'
     port: int = 5432
     username: str = 'ginside'
@@ -37,7 +37,7 @@ class SecuritySettings(BaseSettings):
 
 
 class Settings(BaseSettings):
-    debug: bool = True
+    debug: bool = False
     database: DatabaseSettings = DatabaseSettings()
     security: SecuritySettings = SecuritySettings()
 

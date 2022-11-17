@@ -21,16 +21,16 @@ migrate:
 	poetry run python -m alembic upgrade head
 
 serve:
-	poetry run python -m uvicorn --reload ginside:app
+	GINSIDE_DEBUG=1 poetry run python -m uvicorn --reload ginside:app
 
 lint:
 	poetry run python -m flake8 tests ginside
 
 test:
-	poetry run pytest --cov-report=term-missing
+	poetry run python -m pytest --cov-report=term-missing
 
 testreport:
-	poetry run pytest --cov-report=html
+	poetry run python -m pytest --cov-report=html
 	xdg-open htmlcov/index.html || echo "Coverage is available at htmlcov/index.html"
 
 coverage:
