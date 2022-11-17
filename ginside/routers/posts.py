@@ -1,7 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
-from .. import models
-from .. import schemas
+from .. import models, schemas, auth
 from ..responses import generate_responses
 
 
@@ -78,5 +77,8 @@ async def posts_delete(post_id: int):
     response_model=schemas.PostGet,
     summary='Create post.',
 )
-async def posts_create(post: schemas.PostCreate):
-    return await models.post_create(post)
+async def posts_create(
+    post: schemas.PostCreate,
+    current_user: schemas.UserInternal = Depends(auth.get_current_user),
+):
+    return await models.post_create(post, current_user.username)

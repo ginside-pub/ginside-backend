@@ -1,15 +1,19 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Table, Column, Integer, Text, DateTime, Boolean
+from asyncpg.exceptions import ForeignKeyViolationError
+from sqlalchemy import Table, Column, Integer, Text, DateTime, Boolean, ForeignKey
 
 from .. import schemas
 from ..core.postgres import get_session, metadata
+from .user import UserDoesNotExistError
 
 
 Post = Table(
     'posts',
     metadata,
     Column('id', Integer, primary_key=True),
+    Column('author', Text, ForeignKey('users.username', ondelete='CASCADE'),
+           nullable=False, index=True),
     Column('title', Text, index=True, nullable=False),
     Column('contents', Text, nullable=False),
     Column('archived', Boolean, nullable=False),
@@ -22,13 +26,18 @@ class PostDoesNotExistError(Exception):
     """Raised on attempt to access a nonexistent post."""
 
 
-async def post_create(post: schemas.PostCreate) -> schemas.PostGet:
+async def post_create(post: schemas.PostCreate, author: str) -> schemas.PostGet:
     query = Post.insert().values(
         **post.dict(),
+        author=author,
         created_at=datetime.now(tz=timezone.utc),
     ).returning(*Post.c)
 
-    created = await get_session().fetch_one(query)
+    try:
+        created = await get_session().fetch_one(query)
+    except ForeignKeyViolationError:
+        raise UserDoesNotExistError
+
     return schemas.PostGet(**created)
 
 

@@ -64,13 +64,14 @@ async def test_post_delete_nonexistent(api_client: TestClient):
     assert resp.json() == {'detail': f'Post {post_id!r} was not found.'}
 
 
-async def test_post_create(api_client: TestClient):
+async def test_create_post(auth_api_client: TestClient):
     post = {'title': 'New post', 'contents': 'Contents', 'archived': True}
-    resp = await api_client.post('/posts/', json=post)
+    resp = await auth_api_client.post('/posts/', json=post)
     assert resp.status_code == 200
 
     created = resp.json()
     assert created['title'] == post['title']
+    assert created['author'] == 'jdoe'
     assert created['contents'] == post['contents']
     assert created['archived'] == post['archived']
     assert created['created_at'] is not None

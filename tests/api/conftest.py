@@ -29,6 +29,7 @@ async def auth_api_client(postgres: None) -> TestClient:
 def post_in_db() -> Dict[str, Any]:
     return {
         'id': 1,
+        'author': 'jdoe',
         'title': 'First post',
         'contents': 'Contents of the post',
         'archived': False,
@@ -41,6 +42,7 @@ def post_in_db() -> Dict[str, Any]:
 def post_in_db_archived() -> Dict[str, Any]:
     return {
         'id': 2,
+        'author': 'jdoe',
         'title': 'Archived post',
         'contents': 'Contents',
         'archived': True,

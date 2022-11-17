@@ -26,16 +26,22 @@ def setup_db():
 
         with engine.connect() as connection:
             connection.execute("""
-                INSERT INTO posts (archived, title, contents, created_at)
-                VALUES
-                    (FALSE, 'First post', 'Contents of the post', '2022-01-01T00:00:00+00:00'),
-                    (TRUE, 'Archived post', 'Contents', '2022-01-01T00:00:00+00:00');
-
                 INSERT INTO users (username, display_name, bio, created_at, password)
                 VALUES (
                     'jdoe', 'John Doe', 'First user', '2022-01-01T00:00:00+00:00',
                     '$2b$12$wpPYiaAb.ab67jDCpISc6e0faZybtadbVdAFlewV/7KzOp7TzA1cy'
                 );
+
+                INSERT INTO posts (author, archived, title, contents, created_at)
+                VALUES
+                    (
+                        'jdoe', FALSE, 'First post', 'Contents of the post',
+                        '2022-01-01T00:00:00+00:00'
+                    ),
+                    (
+                        'jdoe', TRUE, 'Archived post', 'Contents',
+                        '2022-01-01T00:00:00+00:00'
+                    );
             """)
 
         yield

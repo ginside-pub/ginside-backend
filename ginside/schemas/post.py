@@ -21,6 +21,7 @@ class PostUpdate(Post):
 
 class PostGet(PostCreate):
     id: int
+    author: str
     created_at: datetime
     updated_at: datetime | None
 

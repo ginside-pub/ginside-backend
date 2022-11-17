@@ -9,6 +9,7 @@ from ginside import schemas
 def post_in_db():
     return schemas.PostGet(
         id=1,
+        author='jdoe',
         title='First post',
         contents='Contents of the post',
         archived=False,
@@ -21,6 +22,7 @@ def post_in_db():
 def post_in_db_archived():
     return schemas.PostGet(
         id=2,
+        author='jdoe',
         title='Archived post',
         contents='Contents',
         archived=True,
