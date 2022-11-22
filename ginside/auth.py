@@ -14,6 +14,10 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 
+class InvalidCredentialsError(Exception):
+    """Raised on attempt to authenticate with invalid credentials."""
+
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -22,14 +26,14 @@ def hash_password(password):
     return pwd_context.hash(password)
 
 
-async def authenticate_user(username: str, password: str) -> schemas.UserInternal | bool:
+async def authenticate_user(username: str, password: str) -> schemas.UserInternal:
     try:
         user = await models.user_get_internal(username)
-    except models.UserDoesNotExistError:
-        return False
+    except models.UserDoesNotExistError as e:
+        raise InvalidCredentialsError from e
 
     if not verify_password(password, user.password):
-        return False
+        raise InvalidCredentialsError
 
     return user
 
@@ -57,7 +61,7 @@ def decode_jwt_token(token: str) -> dict:
     return jwt.decode(token, cfg.security.secret_key, algorithms=[cfg.security.hashing_algorithm])
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.UserInternal:
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.UserGet:
     credentials_exception = HTTPException(
         status_code=401,
         detail='Could not validate credentials',
@@ -66,7 +70,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.UserI
 
     try:
         payload = decode_jwt_token(token)
-        username: str = payload.get('sub')
+        username: str = payload.get('sub', '')
 
         if not username:
             raise credentials_exception

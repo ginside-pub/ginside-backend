@@ -13,7 +13,7 @@ class PostCreate(Post):
     pass
 
 
-class PostUpdate(Post):
+class PostUpdate(BaseModel):
     title: str | None
     contents: str | None
     archived: bool | None

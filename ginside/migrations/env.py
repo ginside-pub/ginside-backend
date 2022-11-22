@@ -9,7 +9,10 @@ from ginside import models  # noqa: F401
 
 
 alembic_config = context.config
-fileConfig(alembic_config.config_file_name)
+
+if alembic_config.config_file_name is not None:
+    fileConfig(alembic_config.config_file_name)
+
 target_metadata = metadata
 
 

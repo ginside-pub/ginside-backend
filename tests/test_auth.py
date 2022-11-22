@@ -21,11 +21,13 @@ async def test_authenticate_user(postgres: None):
 
 
 async def test_authenticate_nonexistent_user(postgres: None):
-    assert await auth.authenticate_user('nonexistent', 'password') is False
+    with raises(auth.InvalidCredentialsError):
+        await auth.authenticate_user('nonexistent', 'password')
 
 
 async def test_authenticate_user_wrong_password(postgres: None):
-    assert await auth.authenticate_user('jdoe', 'password') is False
+    with raises(auth.InvalidCredentialsError):
+        await auth.authenticate_user('jdoe', 'password')
 
 
 def test_access_token():

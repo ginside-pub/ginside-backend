@@ -1,5 +1,5 @@
-from sqlalchemy import MetaData
 import databases
+from sqlalchemy import MetaData
 
 from .config import cfg
 

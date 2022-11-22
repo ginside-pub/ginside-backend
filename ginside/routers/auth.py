@@ -18,9 +18,9 @@ router = APIRouter()
     responses=generate_responses(401),
 )
 async def get_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await auth.authenticate_user(form_data.username, form_data.password)
-
-    if not user:
+    try:
+        user = await auth.authenticate_user(form_data.username, form_data.password)
+    except auth.InvalidCredentialsError:
         raise HTTPException(
             status_code=401,
             detail='Incorrect username or password',
