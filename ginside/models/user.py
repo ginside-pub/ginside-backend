@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import Table, Column, Text, DateTime
 
-from .. import schemas
+from .. import errors, schemas
 from ..core.postgres import get_session, metadata
 
 
@@ -37,7 +37,10 @@ async def user_create(user: schemas.UserCreate) -> schemas.UserGet:
     except UniqueViolationError:
         raise UsernameOccupiedError
 
-    return schemas.UserGet(**created)
+    if created is None:  # pragma: no cover
+        raise errors.UnreachableError
+
+    return schemas.UserGet(**created._mapping)
 
 
 async def user_update(username: str, user: schemas.UserUpdate) -> schemas.UserGet:
@@ -49,7 +52,7 @@ async def user_update(username: str, user: schemas.UserUpdate) -> schemas.UserGe
     if not updated:
         raise UserDoesNotExistError
 
-    return schemas.UserGet(**updated)
+    return schemas.UserGet(**updated._mapping)
 
 
 async def user_get(username: str) -> schemas.UserGet:
@@ -59,7 +62,7 @@ async def user_get(username: str) -> schemas.UserGet:
     if not fetched:
         raise UserDoesNotExistError
 
-    return schemas.UserGet(**fetched)
+    return schemas.UserGet(**fetched._mapping)
 
 
 async def user_get_internal(username: str) -> schemas.UserInternal:
@@ -69,7 +72,7 @@ async def user_get_internal(username: str) -> schemas.UserInternal:
     if not fetched:
         raise UserDoesNotExistError
 
-    return schemas.UserInternal(**fetched)
+    return schemas.UserInternal(**fetched._mapping)
 
 
 async def user_get_list() -> schemas.UserGetList:

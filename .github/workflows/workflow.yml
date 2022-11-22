@@ -37,10 +37,7 @@ jobs:
     - name: Install app dependencies
       run: make bootstrap
 
-    - name: Inspect source code for style issues
-      run: make lint
-
-    - name: Inspect source code for security issues
+    - name: Inspect source code for issues
       run: make inspect
 
     - name: Run project tests

@@ -4,7 +4,7 @@ from asyncpg.exceptions import ForeignKeyViolationError
 from sqlalchemy import Table, Column, Integer, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import and_
 
-from .. import schemas
+from .. import errors, schemas
 from ..core.postgres import get_session, metadata
 from .user import UserDoesNotExistError
 
@@ -39,7 +39,10 @@ async def post_create(post: schemas.PostCreate, author: str) -> schemas.PostGet:
     except ForeignKeyViolationError:
         raise UserDoesNotExistError
 
-    return schemas.PostGet(**created)
+    if created is None:  # pragma: no cover
+        raise errors.UnreachableError
+
+    return schemas.PostGet(**created._mapping)
 
 
 async def post_update(post_id: int, author: str, post: schemas.PostUpdate) -> schemas.PostGet:
@@ -53,7 +56,7 @@ async def post_update(post_id: int, author: str, post: schemas.PostUpdate) -> sc
     if not updated:
         raise PostDoesNotExistError
 
-    return schemas.PostGet(**updated)
+    return schemas.PostGet(**updated._mapping)
 
 
 async def post_get(post_id: int) -> schemas.PostGet:
@@ -63,7 +66,7 @@ async def post_get(post_id: int) -> schemas.PostGet:
     if not fetched:
         raise PostDoesNotExistError
 
-    return schemas.PostGet(**fetched)
+    return schemas.PostGet(**fetched._mapping)
 
 
 async def post_get_list(include_archived: bool = False) -> schemas.PostGetList:
