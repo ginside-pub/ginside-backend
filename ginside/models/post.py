@@ -4,8 +4,9 @@ from asyncpg.exceptions import ForeignKeyViolationError
 from sqlalchemy import Table, Column, Integer, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import and_
 
-from .. import errors, schemas
+from .. import schemas
 from ..core.postgres import get_session, metadata
+from ..errors import UnreachableError
 from .user import UserDoesNotExistError
 
 
@@ -40,7 +41,7 @@ async def post_create(post: schemas.PostCreate, author: str) -> schemas.PostGet:
         raise UserDoesNotExistError
 
     if created is None:  # pragma: no cover
-        raise errors.UnreachableError
+        raise UnreachableError
 
     return schemas.PostGet(**created._mapping)
 

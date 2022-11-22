@@ -3,7 +3,8 @@ from datetime import datetime, timezone
 from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import Table, Column, Text, DateTime
 
-from .. import errors, schemas
+from .. import schemas
+from ..errors import UnreachableError
 from ..core.postgres import get_session, metadata
 
 
@@ -38,7 +39,7 @@ async def user_create(user: schemas.UserCreate) -> schemas.UserGet:
         raise UsernameOccupiedError
 
     if created is None:  # pragma: no cover
-        raise errors.UnreachableError
+        raise UnreachableError
 
     return schemas.UserGet(**created._mapping)
 
