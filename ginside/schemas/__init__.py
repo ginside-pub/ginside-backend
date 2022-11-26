@@ -2,6 +2,8 @@ from .post import PostCreate  # noqa: F401
 from .post import PostGet  # noqa: F401
 from .post import PostGetList  # noqa: F401
 from .post import PostUpdate  # noqa: F401
+from .tag import TagGet  # noqa: F401
+from .tag import TagGetList  # noqa: F401
 from .token import Token  # noqa: F401
 from .token import TokenData  # noqa: F401
 from .user import UserCreate  # noqa: F401

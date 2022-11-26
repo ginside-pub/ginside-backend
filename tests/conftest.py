@@ -47,6 +47,9 @@ def setup_db():
                         'jdoe', TRUE, 'Archived post', 'Contents',
                         '2022-01-01T00:00:00+00:00'
                     );
+
+                INSERT INTO tags (post_id, tag)
+                VALUES (1, 'tag');
             """)
 
         yield

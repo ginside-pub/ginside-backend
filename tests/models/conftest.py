@@ -32,6 +32,11 @@ def post_in_db_archived():
 
 
 @fixture
+def tag_in_db():
+    return schemas.TagGet(post_id=1, tag='tag')
+
+
+@fixture
 def user_in_db():
     return schemas.UserGet(
         username='jdoe',
